@@ -1,0 +1,59 @@
+---
+title: "INFLUENCE OF STRATEGIC MANAGEMENT ON PERFORMANCE OF HIV AND AIDS INTERVENTIONS MANAGED BY NON-GOVERNMENTAL ORGANISATIONS IN NYANZA REGION, KENYA"
+author: "Leon Awiti"
+date: "04/01/2021"
+output: word_document
+---
+```{r}
+# Importing the dataset
+Dataset <- read.csv("Strategic_Management.csv", header=TRUE)
+```
+```{r}
+# Exploring the data
+head(Dataset)
+head(Dataset$Project_Perfomance)
+```
+```{r}
+mean(Dataset$Project_Perfomance)
+median(Dataset$Project_Perfomance)
+```
+```{r}
+summary(Dataset)
+summary(Dataset$Project_Perfomance)
+```
+```{r}
+# Splitting the dataset into the Training set and Test set
+# install.packages('caTools')
+library(caTools)
+set.seed(123)
+split = sample.split(Dataset$Project_Perfomance, SplitRatio = 0.8)
+training_set = subset(Dataset, split == TRUE)
+test_set = subset(Dataset, split == FALSE)
+```
+```{r}
+#correlations
+cor(Dataset$Project_Perfomance, Dataset$OrganizationsPurpose)
+cor(Dataset$Project_Perfomance, Dataset$EnvironmentalScanning)
+cor(Dataset$Project_Perfomance, Dataset$StrategyFormulation)
+cor(Dataset$Project_Perfomance, Dataset$StrategyImplementation)
+cor(Dataset$Project_Perfomance, Dataset$StrategyEvaluation)
+cor(Dataset$Project_Perfomance, Dataset$StakeholderParticipation)
+```
+```{r}
+# Fitting Multiple Linear Regression to the Training set
+regressor=lm("Project_Perfomance~OrganizationsPurpose+EnvironmentalScanning+StrategyFormulation + StrategyImplementation + StrategyEvaluation + StakeholderParticipation",data=training_set)
+# Get summary of the model 
+summary(regressor)
+```
+```{r}
+# Get the coefficients
+regressor$coefficients
+```
+```{r}
+# Predicting the Test set results
+y_pred = predict(regressor, newdata = test_set)
+```
+```{r}
+# ANOVA table
+anova(regressor)
+```
