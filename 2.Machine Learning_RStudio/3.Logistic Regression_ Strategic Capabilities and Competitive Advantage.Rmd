@@ -1,0 +1,79 @@
+---
+title: "STRATEGIC CAPABILITIES AND COMPETITIVE ADVANTAGE STUDY"
+author: "Leon Awiti"
+date: "11/01/2021"
+output: word_document
+---
+
+# Study topic
+
+#INFLUENCE OF STRATEGIC CAPABILITIES ON ON THE COMPETITIVE ADVANTAGE IN SUGAR COMPANIES IN WESTERN KENYA
+
+# Study Objectives
+
+#1.	To assess the influence of human resource capability on competitive advantage in sugar companies in Western Kenya.
+#2.	To determine the influence of technology capability on competitive advantage in sugar companies in Western Kenya.
+#3.	To establish the influence of material capability on competitive advantage in sugar companies in Western Kenya.
+#4.	To assess the influence of financial resources capability on competitive advantage in sugar companies in Western Kenya.
+#5.	To determine the moderating influence of Government regulatory policy on the relationship between strategic capabilities and competitive advantage in sugar companies in Western Kenya.
+
+#Study Hypotheses
+
+#1.	H0: There is no significant relationship between human resource capability and competitive advantage in sugar companies in Western Kenya.
+#2.	H0: There is no significant relationship between technology capability and competitive advantage in sugar companies in Western Kenya.
+#3.	H0: There is no significant relationship between material capability and competitive advantage in sugar companies in Western Kenya.
+#4.	H0: There is no significant relationship between financial resources capability and competitive advantage in sugar companies in Western Kenya.
+#5.	H0: The government regulatory policy does not moderate the relationship between strategic capabilities and competitive advantage in sugar companies in Western Kenya.
+```{r}
+# Importing the dataset
+Dataset2 <- read.csv("Strategic_Capabilities.csv", header=TRUE)
+```
+```{r}
+# Exploring the data
+head(Dataset2)
+```
+```{r}
+summary(Dataset2)
+```
+```{r}
+# Splitting the dataset into the Training set and Test set
+# install.packages('caTools')
+library(caTools)
+set.seed(120)
+split = sample.split(Dataset2$CompetitiveAdvantage, SplitRatio = 0.8)
+training_set = subset(Dataset2, split == TRUE)
+test_set = subset(Dataset2, split == FALSE)
+```
+```{r}
+#correlations
+cor(Dataset2$CompetitiveAdvantage, Dataset2$HumanResourceCapability)
+cor(Dataset2$CompetitiveAdvantage, Dataset2$TechnologyCapability)
+cor(Dataset2$CompetitiveAdvantage, Dataset2$MaterialsCapability)
+cor(Dataset2$CompetitiveAdvantage, Dataset2$FinancialCapability)
+cor(Dataset2$CompetitiveAdvantage, Dataset2$GovernmentRegulation)
+```
+```{r}
+# correlation matrix
+dat <- Dataset2[, c(0, 1:6)]
+round(cor(dat), 2)
+```
+```{r}
+# Fitting Multiple Linear Regression to the Training set
+
+regressor=lm("CompetitiveAdvantage~HumanResourceCapability+TechnologyCapability+MaterialsCapability + FinancialCapability + GovernmentRegulation",data=training_set)
+
+# Get summary of the model 
+summary(regressor)
+```
+```{r}
+# Get the coefficients
+regressor$coefficients
+```
+```{r}
+# Predicting the Test set results
+y_pred = predict(regressor, newdata = test_set)
+```
+```{r}
+# ANOVA table
+anova(regressor)
+```
