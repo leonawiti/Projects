@@ -1,0 +1,78 @@
+---
+title: INFLUENCE OF STRATEGY IMPLEMENTATION DRIVERS ON WATER SERVICE DELIVERY IN LAKE
+  VICTORIA SOUTH REGION, KENYA
+author: "Leon Awiti"
+date: "11/01/2021"
+output: word_document
+---
+
+#Topic of the study 
+
+#INFLUENCE OF STRATEGY IMPLEMENTATION DRIVERS ON WATER SERVICE DELIVERY IN LAKE VICTORIA SOUTH REGION, KENYA
+
+#Objectives of the study 
+
+#i).To examine the influence of organizational structure on water service delivery in Lake Victoria south region, Kenya. 
+#ii).To establish the influence of human capital development on water service delivery in Lake Victoria south region, Kenya. 
+#iii).To determine the influence of corporate governance practices on water service delivery in Lake Victoria south region, Kenya. 
+#iv).To assess the influence of technological adoption on water service delivery in Lake Victoria south region, Kenya. 
+#v).To determine the moderating effect of government regulatory policies on the relationship between strategy implementation drivers and water service delivery in Lake Victoria south region. 
+
+#Study Hypotheses
+
+#i)H0 Organizational structure has no significant influence on water service delivery in Lake Victoria south region, Kenya.
+#ii)H0 Human capital  development has no significant influence on water service delivery in Lake Victoria south region, Kenya.
+#iii)H0 Corporate governance practices have no significant influence on water service delivery in Lake Victoria south region, Kenya.
+#iv)H0 There is no significant relationship between the technological adoption and water service delivery in Lake Victoria south region, Kenya.
+#v)H0 There is no significant moderating effect of government regulatory policies on the relationship between strategy implementation drivers and water service delivery.
+```{r}
+# Importing the data
+Dataset7 <-read.csv("WaterServiceDelivery.csv",header=TRUE)
+```
+```{r}
+# Exploring the data
+head(Dataset7)
+```
+```{r}
+summary(Dataset7)
+```
+# Splitting the dataset into the Training set and Test set
+# install.packages('caTools')
+library(caTools)
+set.seed(123)
+split = sample.split(Dataset7, SplitRatio = 0.8)
+training_set = subset(Dataset7, split == TRUE)
+test_set = subset(Dataset7, split == FALSE)
+
+```{r}
+#correlations
+cor(Dataset7$WaterServiceDelivery, Dataset7$TechnologyAdoption)
+cor(Dataset7$WaterServiceDelivery, Dataset7$CorporateGovernancePractices)
+cor(Dataset7$WaterServiceDelivery, Dataset7$OrganizationalStructure)
+cor(Dataset7$WaterServiceDelivery, Dataset7$HumanCapitalDevelopment)
+cor(Dataset7$WaterServiceDelivery, Dataset7$GovernmentRegulatoryPolicies)
+```
+```{r}
+# correlation matrix
+dat <- Dataset7[, c(0, 1:6)]
+round(cor(dat), 2)
+```
+```{r}
+# Fitting Multiple Linear Regression to the Training set
+regressor=lm("WaterServiceDelivery~TechnologyAdoption+CorporateGovernancePractices+OrganizationalStructure+HumanCapitalDevelopment+GovernmentRegulatoryPolicies",data=training_set)
+
+# Get summary of the model 
+summary(regressor)
+```
+```{r}
+# Get the coefficients
+regressor$coefficients
+```
+```{r}
+# Predicting the Test set results
+y_pred = predict(regressor, newdata = test_set)
+```
+```{r}
+# ANOVA table
+anova(regressor)
+```
