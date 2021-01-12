@@ -1,0 +1,82 @@
+---
+title: "INFLUENCE OF STRATEGIC MANAGEMENT ON PERFORMANCE OF HIV AND AIDS INTERVENTIONS MANAGED BY NON-GOVERNMENTAL ORGANISATIONS IN NYANZA REGION, KENYA"
+author: "Leon Awiti"
+date: "04/01/2021"
+output: word_document
+---
+
+#Study Topic
+
+#INFLUENCE OF STRATEGIC MANAGEMENT ON PERFORMANCE OF HIV AND AIDS INTERVENTIONS MANAGED BY NON-GOVERNMENTAL ORGANISATIONS IN NYANZA REGION, KENYA
+
+#The study was guided by the following objectives: 
+
+#1. To examine the influence of organisations purpose on performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region. 
+#2. To establish the influence of environmental scanning on performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region. 
+#3. To determine the influence of strategy formulation on performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region. 
+#4. To assess the influence of strategy implementation on performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region. 
+#5. To establish the influence of strategy evaluation and control on performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region. 
+#6. To examine the moderating influence of stakeholder participation on the relationship between strategic management and performance of HIV and AIDS interventions managed by NGOs in Nyanza Region. 
+
+#The study sought to test the following research hypotheses: 
+
+#1. H0: There is no significant relationship between organizations purpose and performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region 
+#2. H0: There is no significant relationship between environmental scanning and performance HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region 
+#3. H0: There is no significant relationship between strategy formulation and performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region 
+#4. H0: There is no significant relationship between strategy implementation and performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region 
+#5. H0: There is no significant relationship between strategy evaluation and control on performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region 
+#6. H0: There is no significant moderating influence of stakeholder participation on the relationship between strategic management and performance of HIV and AIDS interventions managed by non-governmental organisations in Nyanza Region
+
+```{r}
+# Importing the dataset
+Dataset <- read.csv("Strategic_Management.csv", header=TRUE)
+```
+```{r}
+# Exploring the data
+head(Dataset)
+head(Dataset$Project_Perfomance)
+```
+```{r}
+mean(Dataset$Project_Perfomance)
+median(Dataset$Project_Perfomance)
+```
+```{r}
+summary(Dataset)
+summary(Dataset$Project_Perfomance)
+```
+```{r}
+# Splitting the dataset into the Training set and Test set
+# install.packages('caTools')
+library(caTools)
+set.seed(123)
+split = sample.split(Dataset$Project_Perfomance, SplitRatio = 0.8)
+training_set = subset(Dataset, split == TRUE)
+test_set = subset(Dataset, split == FALSE)
+```
+```{r}
+#correlations
+cor(Dataset$Project_Perfomance, Dataset$OrganizationsPurpose)
+cor(Dataset$Project_Perfomance, Dataset$EnvironmentalScanning)
+cor(Dataset$Project_Perfomance, Dataset$StrategyFormulation)
+cor(Dataset$Project_Perfomance, Dataset$StrategyImplementation)
+cor(Dataset$Project_Perfomance, Dataset$StrategyEvaluation)
+cor(Dataset$Project_Perfomance, Dataset$StakeholderParticipation)
+```
+```{r}
+# Fitting Multiple Linear Regression to the Training set
+regressor=lm("Project_Perfomance~OrganizationsPurpose+EnvironmentalScanning+StrategyFormulation + StrategyImplementation + StrategyEvaluation + StakeholderParticipation",data=training_set)
+# Get summary of the model 
+summary(regressor)
+```
+```{r}
+# Get the coefficients
+regressor$coefficients
+```
+```{r}
+# Predicting the Test set results
+y_pred = predict(regressor, newdata = test_set)
+```
+```{r}
+# ANOVA table
+anova(regressor)
+```
