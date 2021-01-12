@@ -1,0 +1,74 @@
+---
+title: "STAKEHOLDER PARTICIPATION ON SUSTAINABILITY OF COMMUNITY DEVELOPMENT PROJECTS"
+author: "Leon Awiti"
+date: "11/01/2021"
+output: word_document
+---
+
+#Study Topic
+
+#Influence of Stakeholder Participation on Sustainability of Community Development Projects Implemented by Plan International in Homa Bay Town Sub-County, Kenya
+
+#The Specific Objectives
+
+#i) To determine the influence of passive participation among stakeholders on sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+#ii) To examine the influence of interactive participation among stakeholders on sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+#iii) To establish the influence of functional participation among stakeholders on sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+#iv) To investigate the influence of optimum participation among stakeholders on sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+
+#Study Hypotheses
+
+#i) There is no significant relationship between passive participation among stakeholders and sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+#ii) There is no significant relationship between interactive participation among stakeholders and sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+#iii) There is no significant relationship between functional participation among stakeholders and sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+#iv) There is no significant relationship between optimum participation among stakeholders on sustainability of community development projects implemented by Plan International in Homa Bay Town Sub-County
+```{r}
+# Importing the dataset
+Dataset4 <- read.csv("StakeholderParticipation.csv", header=TRUE)
+```
+```{r}
+# Exploring the data
+head(Dataset4)
+```
+```{r}
+summary(Dataset)
+```
+# Splitting the dataset into the Training set and Test set
+# install.packages('caTools')
+library(caTools)
+set.seed(120)
+split = sample.split(Dataset4$ProjectSustainability, SplitRatio = 0.8)
+training_set = subset(Dataset4, split == TRUE)
+test_set = subset(Dataset4, split == FALSE)
+
+```{r}
+#correlations
+cor(Dataset4$ProjectSustainability, Dataset4$PassiveParticipation)
+cor(Dataset4$ProjectSustainability, Dataset4$InteractiveParticipation)
+cor(Dataset4$ProjectSustainability, Dataset4$FunctionalParticipation)
+cor(Dataset4$ProjectSustainability, Dataset4$OptimalParticipation)
+```
+```{r}
+# correlation matrix
+dat <- Dataset4[, c(0, 1:5)]
+round(cor(dat), 2)
+```
+```{r}
+# Fitting Multiple Linear Regression to the Training set
+regressor=lm("ProjectSustainability~PassiveParticipation+InteractiveParticipation+FunctionalParticipation +OptimalParticipation",data=training_set)
+
+# Get summary of the model 
+summary(regressor)
+```
+```{r}
+# Get the coefficients
+regressor$coefficients
+```
+```{r}
+# Predicting the Test set results
+y_pred = predict(regressor, newdata = test_set)
+```
+```{r}
+# ANOVA table
+anova(regressor)
+```
