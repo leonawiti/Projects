@@ -1,0 +1,77 @@
+---
+title: "RELATIONSHIP BETWEEN WORKFORCE DIVERSITY AND EMPLOYEE PERFORMANCE IN PUBLIC UNIVERSITIES IN KENYA"
+author: "Leon Awiti"
+date: "11/01/2021"
+output: word_document
+---
+
+#Study Topic
+#RELATIONSHIP BETWEEN WORKFORCE DIVERSITY AND EMPLOYEE PERFORMANCE IN PUBLIC UNIVERSITIES IN KENYA
+
+#The specific objectives:
+#1.	To assess relationship between age diversity and employee performance in public universities in Kenya.
+#2.	To establish relationship between gender diversity and employee performance in public universities in Kenya. 
+#3.	To assess relationship between ethnic diversity and employee performance in public universities in Kenya.
+#4.	To determine relationship between education background diversity and employee performance in public universities in Kenya.
+#5.	To establish the moderating influence of organization culture on the relationship between workforce diversity and employee performance in public universities in Kenya.
+
+#The study seeks to test the following hypotheses.
+#H0. There is no significant relationship between gender diversity and employee performance in public universities in Kenya.
+#H0. There is no significant relationship between age diversity and employee performance in public universities in Kenya. 
+#H0. There is no significant relationship between ethnic diversity and employee performance in public universities in Kenya. 
+#H0. There is no significant relationship between education background diversity and employee performance in public universities in Kenya.    
+#H0. Organizational culture does not have a significant moderating influence on the relationship between workforce diversity and employee performance in public universities in Kenya.
+
+```{r,echo=FALSE}
+# Importing the dataset
+Dataset <- read.csv("Workforce_Diversity.csv", header=TRUE)
+```
+```{r,echo=FALSE}
+# Exploring the data
+head(Dataset)
+```
+```{r,echo=FALSE}
+summary(Dataset)
+```
+```{r,echo=FALSE}
+# Splitting the dataset into the Training set and Test set
+# install.packages('caTools')
+library(caTools)
+set.seed(120)
+split = sample.split(Dataset$EmployeePerformance, SplitRatio = 0.8)
+training_set = subset(Dataset, split == TRUE)
+test_set = subset(Dataset, split == FALSE)
+```
+```{r,echo=FALSE}
+#correlations
+cor(Dataset$EmployeePerformance, Dataset$GenderDiversity)
+cor(Dataset$EmployeePerformance, Dataset$AgeDiversity)
+cor(Dataset$EmployeePerformance, Dataset$EthnicDiversity)
+cor(Dataset$EmployeePerformance, Dataset$EducationDiversity)
+cor(Dataset$EmployeePerformance, Dataset$OrganizationalCulture)
+```
+```{r,echo=FALSE}
+# correlation matrix
+dat <- Dataset[, c(0, 1:6)]
+round(cor(dat), 2)
+```
+```{r,echo=FALSE}
+# Fitting Multiple Linear Regression to the Training set
+
+regressor=lm("EmployeePerformance~GenderDiversity+AgeDiversity+EthnicDiversity +EducationDiversity + OrganizationalCulture",data=training_set)
+
+# Get summary of the model 
+summary(regressor)
+```
+```{r,echo=FALSE}
+# Get the coefficients
+regressor$coefficients
+```
+```{r,echo=FALSE}
+# Predicting the Test set results
+y_pred = predict(regressor, newdata = test_set)
+```
+```{r,echo=FALSE}
+# ANOVA table
+anova(regressor)
+```
